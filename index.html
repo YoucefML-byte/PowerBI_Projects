@@ -76,7 +76,7 @@
   .btn:hover{transform:translateY(-2px);}
   .btn-primary{background:var(--accent); color:var(--accent-ink); border-color:var(--accent);}
   .btn-ghost:hover{border-color:var(--accent);}
-  .btn:focus-visible, .card a:focus-visible, .nav a:focus-visible, .menu-btn:focus-visible{outline:2px solid var(--accent); outline-offset:3px;}
+  .btn:focus-visible, .nav a:focus-visible, .menu-btn:focus-visible{outline:2px solid var(--accent); outline-offset:3px;}
 
   /* ---------- Hero ---------- */
   .hero{padding:96px 0 88px; position:relative; overflow:hidden;}
@@ -141,28 +141,85 @@
   .skill h3{font-size:1.1rem; margin-bottom:6px;}
   .skill p{color:var(--ink-dim); font-size:.92rem; margin:0;}
 
-  /* Projets */
-  .projects{display:grid; grid-template-columns:repeat(auto-fill, minmax(320px,1fr)); gap:20px;}
-  .card{
-    display:flex; flex-direction:column;
-    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
-    overflow:hidden; transition:border-color .15s, transform .15s;
+  /* Projets : carrousel */
+  .carousel{position:relative; max-width:960px; margin:0 auto; container-type:inline-size;}
+  .car-frame{
+    background:var(--panel); border:1px solid var(--line); border-radius:22px;
+    padding:20px; box-shadow:0 40px 80px -30px rgba(0,0,0,.7);
   }
-  .card:hover{border-color:var(--accent); transform:translateY(-4px);}
-  .thumb{aspect-ratio:16/9; background:var(--bg-alt); border-bottom:1px solid var(--line); position:relative; overflow:hidden;}
-  .thumb img{width:100%; height:100%; object-fit:cover; display:block;}
-  .thumb .ph{position:absolute; inset:0; display:flex; align-items:flex-end; gap:6px; padding:22px;}
-  .thumb .ph span{flex:1; background:linear-gradient(to top, rgba(242,200,17,.55), rgba(242,200,17,.1)); border-radius:3px 3px 0 0;}
-  .thumb .num{position:absolute; top:14px; left:16px; font-family:'Space Grotesk', sans-serif; font-weight:700; color:var(--accent); font-size:.85rem;}
-  .card-body{padding:24px; display:flex; flex-direction:column; gap:12px; flex:1;}
-  .card h3{font-size:1.2rem;}
-  .card p{color:var(--ink-dim); font-size:.93rem; margin:0;}
+  .car-track{
+    display:flex; overflow-x:auto; overscroll-behavior-x:contain;
+    scroll-snap-type:x mandatory; scroll-behavior:smooth;
+    scrollbar-width:none; border-radius:12px;
+  }
+  .car-track::-webkit-scrollbar{display:none;}
+  .car-track:focus-visible{outline:2px solid var(--accent); outline-offset:4px;}
+  .slide{flex:0 0 100%; scroll-snap-align:center; scroll-snap-stop:always; min-width:0;}
+  .shot{
+    position:relative; aspect-ratio:16/9; overflow:hidden; border-radius:12px;
+    background:linear-gradient(180deg, #2B2A3A, #1C1B26);
+  }
+  .shot img{width:100%; height:100%; object-fit:cover; display:block;}
+  .shot-title{
+    position:absolute; top:0; right:0; left:0; z-index:1;
+    padding:18px 24px; text-align:right;
+    font-family:'Space Grotesk', sans-serif; font-weight:600; letter-spacing:.04em; text-transform:uppercase;
+    font-size:clamp(.8rem, 2vw, 1.15rem);
+    background:linear-gradient(180deg, rgba(10,10,16,.75), transparent);
+  }
+  /* Faux tableau de bord affiché tant qu'il n'y a pas de capture */
+  .fake{position:absolute; inset:16% 9% 7%; display:grid; grid-template-rows:auto 1fr; gap:3%;
+        background:#15141D; border:1px solid #34323F; border-radius:6px; padding:3%;}
+  .fake-kpis{display:grid; grid-template-columns:repeat(4,1fr); gap:3%;}
+  .fake-kpis div{background:#211F2B; border-radius:4px; padding:6% 8%;}
+  .fake-kpis i{display:block; height:5px; width:45%; background:#4A4758; border-radius:3px; margin-bottom:10%;}
+  .fake-kpis b{display:block; height:10px; width:70%; background:var(--accent); opacity:.85; border-radius:3px;}
+  .fake-bars{display:flex; align-items:flex-end; gap:2.5%; background:#211F2B; border-radius:4px; padding:3%;}
+  .fake-bars span{flex:1; border-radius:2px 2px 0 0; background:linear-gradient(to top, var(--accent), rgba(242,200,17,.25));}
+
+  .slide-info{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:16px 24px; padding:22px 6px 4px;}
+  .slide-info > div{flex:1 1 360px;}
+  .slide-info p{color:var(--ink-dim); font-size:.95rem; margin:6px 0 12px;}
+  .slide-info h3{font-size:1.25rem;}
   .chips{display:flex; flex-wrap:wrap; gap:6px; list-style:none; margin:0; padding:0;}
   .chips li{font-size:.75rem; font-weight:500; padding:4px 10px; border-radius:999px; border:1px solid var(--line); color:var(--ink-dim);}
-  .card-actions{margin-top:auto; padding-top:8px;}
-  .card-actions a{color:var(--accent); font-weight:600; font-size:.92rem; text-decoration:none;}
-  .card-actions a:hover{text-decoration:underline;}
+
+  .car-btn{
+    position:absolute; top:calc(21px + (100cqi - 42px) * 9 / 32); translate:0 -50%; z-index:2;
+    width:72px; height:72px; border-radius:50%; border:0; cursor:pointer;
+    display:grid; place-items:center;
+    background:#fff; color:#3A3F4B;
+    box-shadow:0 10px 30px rgba(0,0,0,.35);
+    transition: color .15s ease, transform .15s ease;
+  }
+  .car-btn:hover{color:#2F5BE0; transform:scale(1.06);}
+  .car-btn:focus-visible{outline:3px solid var(--accent); outline-offset:3px;}
+  .car-btn svg{width:30px; height:30px;}
+  .car-btn.prev{left:-36px;}
+  .car-btn.next{right:-36px;}
+
+  .dots{display:flex; justify-content:center; gap:14px; margin-top:32px;}
+  .dots button{
+    width:16px; height:16px; padding:0; border:0; border-radius:50%; cursor:pointer;
+    background:#2E3440; transition:background-color .2s, transform .2s;
+  }
+  .dots button[aria-current="true"]{background:var(--accent); transform:scale(1.35);}
+  .dots button:focus-visible{outline:2px solid var(--accent); outline-offset:3px;}
+  .counter{text-align:center; color:var(--ink-dim); font-family:'Space Grotesk', sans-serif; font-size:.85rem; margin-top:14px;}
   .empty{color:var(--ink-dim); border:1px dashed var(--line); border-radius:var(--radius); padding:32px; text-align:center;}
+
+  @media (max-width: 1060px){
+    .car-btn.prev{left:-12px;}
+    .car-btn.next{right:-12px;}
+  }
+  @media (max-width: 640px){
+    .car-frame{padding:10px; border-radius:16px;}
+    .car-btn{width:44px; height:44px; top:calc(11px + (100cqi - 22px) * 9 / 32);}
+    .car-btn svg{width:20px; height:20px;}
+    .car-btn.prev{left:-8px;}
+    .car-btn.next{right:-8px;}
+    .slide-info{padding:16px 4px 4px;}
+  }
 
   /* Démarche */
   .steps{display:grid; grid-template-columns:repeat(auto-fit, minmax(210px,1fr)); gap:16px; counter-reset:step; list-style:none; margin:0; padding:0;}
@@ -195,8 +252,9 @@
   @media (prefers-reduced-motion: reduce){
     html{scroll-behavior:auto;}
     .reveal{animation:none;}
-    .btn, .skill, .card{transition:none;}
-    .btn:hover, .skill:hover, .card:hover{transform:none;}
+    .btn, .skill, .car-btn{transition:none;}
+    .btn:hover, .skill:hover, .car-btn:hover{transform:none;}
+    .car-track{scroll-behavior:auto;}
   }
 </style>
 </head>
@@ -278,9 +336,17 @@
       <div class="section-head reveal">
         <span class="tag">Projets</span>
         <h2>Tableaux de bord réalisés</h2>
-        <p>Une sélection de mes rapports Power BI. Cliquez pour ouvrir le rapport interactif.</p>
+        <p>Faites défiler avec les flèches (ou glissez sur mobile) pour parcourir mes rapports Power BI.</p>
       </div>
-      <div class="projects" id="projects"></div>
+      <div class="carousel reveal" id="carousel" role="region" aria-roledescription="carrousel" aria-label="Projets Power BI">
+        <button type="button" class="car-btn prev" id="prevBtn" aria-label="Projet précédent"></button>
+        <div class="car-frame">
+          <div class="car-track" id="track" tabindex="0" aria-label="Utilisez les flèches gauche et droite pour changer de projet"></div>
+        </div>
+        <button type="button" class="car-btn next" id="nextBtn" aria-label="Projet suivant"></button>
+        <div class="dots" id="dots"></div>
+        <p class="counter" id="counter" aria-live="polite"></p>
+      </div>
     </div>
   </section>
 
@@ -411,36 +477,90 @@
     ])
   ));
 
+  /* ---- Carrousel des projets ---- */
+  const track = $("track"), dots = $("dots");
+  const fleche = d => {
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("viewBox", "0 0 24 24");
+    svg.setAttribute("aria-hidden", "true");
+    svg.innerHTML = `<path d="${d}" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>`;
+    return svg;
+  };
+
   if (projets.length === 0) {
-    $("projects").append(el("div", { className: "empty", textContent: "Aucun projet pour le moment." }));
-  }
+    $("carousel").replaceChildren(el("div", { className: "empty", textContent: "Aucun projet pour le moment." }));
+  } else {
+
   projets.forEach((p, i) => {
-    const thumb = el("div", { className: "thumb" });
+    const shot = el("div", { className: "shot" }, [el("div", { className: "shot-title", textContent: p.titre })]);
     if (p.image) {
-      thumb.append(el("img", { src: p.image, alt: `Aperçu du rapport ${p.titre}`, loading: "lazy" }));
+      shot.append(el("img", { src: p.image, alt: `Capture du rapport ${p.titre}`, loading: i === 0 ? "eager" : "lazy" }));
     } else {
-      const ph = el("div", { className: "ph" });
-      [40, 65, 50, 80, 60, 90].forEach((h, j) => {
-        const bar = el("span");
-        bar.style.height = ((h + i * 13 + j * 7) % 70 + 25) + "%";
-        ph.append(bar);
-      });
-      thumb.append(ph, el("span", { className: "num", textContent: String(i + 1).padStart(2, "0") }));
+      const bars = el("div", { className: "fake-bars" });
+      for (let j = 0; j < 12; j++) {
+        const b = el("span");
+        b.style.height = ((j * 23 + i * 37) % 60 + 30) + "%";
+        bars.append(b);
+      }
+      const kpis = el("div", { className: "fake-kpis" }, [0, 1, 2, 3].map(() => el("div", {}, [el("i"), el("b")])));
+      shot.append(el("div", { className: "fake", ariaHidden: "true" }, [kpis, bars]));
     }
-    $("projects").append(
-      el("article", { className: "card reveal" }, [
-        thumb,
-        el("div", { className: "card-body" }, [
+
+    track.append(el("article", {
+      className: "slide",
+      ariaLabel: `Projet ${i + 1} sur ${projets.length}`
+    }, [
+      shot,
+      el("div", { className: "slide-info" }, [
+        el("div", {}, [
           el("h3", { textContent: p.titre }),
           el("p", { textContent: p.description }),
-          el("ul", { className: "chips" }, p.outils.map(o => el("li", { textContent: o }))),
-          el("div", { className: "card-actions" }, [
-            el("a", { href: p.url, target: "_blank", rel: "noopener noreferrer", textContent: "Voir le tableau de bord →" })
-          ])
-        ])
+          el("ul", { className: "chips" }, p.outils.map(o => el("li", { textContent: o })))
+        ]),
+        el("a", { href: p.url, target: "_blank", rel: "noopener noreferrer", className: "btn btn-primary", textContent: "Voir le tableau de bord →" })
       ])
-    );
+    ]));
+    track.lastChild.setAttribute("aria-roledescription", "diapositive");
+
+    const dot = el("button", { type: "button", ariaLabel: `Afficher le projet ${i + 1}` });
+    dot.addEventListener("click", () => allerA(i));
+    dots.append(dot);
   });
+
+  $("prevBtn").append(fleche("M15 5l-7 7 7 7"));
+  $("nextBtn").append(fleche("M9 5l7 7-7 7"));
+
+  let courant = 0;
+  const majIndicateurs = () => {
+    [...dots.children].forEach((d, i) => d.setAttribute("aria-current", i === courant));
+    $("counter").textContent = `${String(courant + 1).padStart(2, "0")} / ${String(projets.length).padStart(2, "0")}`;
+  };
+  // Boucle : après le dernier projet on revient au premier, et inversement
+  const allerA = i => {
+    const n = projets.length;
+    courant = (i + n) % n;
+    track.scrollTo({ left: courant * track.clientWidth });
+    majIndicateurs();
+  };
+  $("prevBtn").addEventListener("click", () => allerA(courant - 1));
+  $("nextBtn").addEventListener("click", () => allerA(courant + 1));
+  track.addEventListener("keydown", e => {
+    if (e.key === "ArrowLeft")  { e.preventDefault(); allerA(courant - 1); }
+    if (e.key === "ArrowRight") { e.preventDefault(); allerA(courant + 1); }
+  });
+
+  // Glissement au doigt / au pavé tactile : on suit la diapositive visible
+  let rafId = 0;
+  track.addEventListener("scroll", () => {
+    cancelAnimationFrame(rafId);
+    rafId = requestAnimationFrame(() => {
+      const i = Math.round(track.scrollLeft / track.clientWidth);
+      if (i !== courant && i >= 0 && i < projets.length) { courant = i; majIndicateurs(); }
+    });
+  }, { passive: true });
+  window.addEventListener("resize", () => track.scrollTo({ left: courant * track.clientWidth, behavior: "instant" }));
+  majIndicateurs();
+  }
 
   const liens = [
     profil.email    && { href: `mailto:${profil.email}`, texte: "M'écrire un e-mail", cls: "btn btn-primary" },
